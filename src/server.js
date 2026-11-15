@@ -1,5 +1,11 @@
 import express from "express";
 import cors from "cors";
+import { config } from "dotenv";
+import { connectDB, disconnectDB } from "./config/db.js";
+
+config();
+await connectDB();
+
 const app = express();
 const port = process.env.PORT || 5001;
 
@@ -19,6 +25,31 @@ app.get("/", (req, res) => {
 // use book routes
 app.use("/books", bookRoutes);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+});
+
+// Handle unhandled promise rejections and disconnect from the database
+process.on("unhandledRejection", async (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  server.close(async () => {
+    await disconnectDB();
+    process.exit(1);
+  });
+});
+
+//handle uncaught exceptions and disconnect from the database
+process.on("uncaughtException", async (error) => {
+  console.error("Uncaught Exception:", error);
+  await disconnectDB();
+  process.exit(1);
+});
+
+// gracefull shutdown on SIGINT and SIGTERM
+process.on("SIGTERM", async () => {
+  console.log("Received SIGTERM. Shutting down gracefully...");
+  server.close(async () => {
+    await disconnectDB();
+    process.exit(0);
+  });
 });
