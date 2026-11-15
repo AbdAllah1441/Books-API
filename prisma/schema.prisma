@@ -6,10 +6,63 @@ datasource db {
   provider = "postgresql"
 }
 
-// Add your models here, for example:
-// model Book {
-//   id        Int      @id @default(autoincrement())
-//   title     String
-//   author    String
-//   createdAt DateTime @default(now())
-// }
+// user model 
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+
+  library   UserBook[]
+
+  createdAt DateTime @default(now())
+}
+
+// book model
+model Book {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  isbn        String?  @unique
+  publishedAt DateTime?
+  pages       Int?
+  cover       String?
+
+  author      String
+  genre       String[]
+
+  library     UserBook[]
+
+  createdAt   DateTime @default(now())
+}
+
+enum ReadingStatus {
+  WANT_TO_READ
+  CURRENTLY_READING
+  COMPLETED
+  ABANDONED
+}
+
+model UserBook {
+  id        String        @id @default(uuid())
+
+  userId    String
+  bookId    String
+
+  status    ReadingStatus @default(WANT_TO_READ)
+
+  rating    Int?
+  notes     String?
+
+  currentPage Int         @default(0)
+  startedAt DateTime?
+  finishedAt DateTime?
+
+user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@unique([userId, bookId])
+}
