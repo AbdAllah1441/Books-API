@@ -12,10 +12,23 @@ model User {
   name      String
   email     String   @unique
   password  String
+  // A user may have an author profile
+  authorProfile Author?
 
   library   UserBook[]
 
   createdAt DateTime @default(now())
+}
+
+// Author model
+model Author {
+  id        String   @id @default(uuid())
+  name      String
+  bio       String?
+  books     Book[] 
+  // Optional connection to a registered user
+  userId String? @unique
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
 
 // book model
@@ -28,7 +41,7 @@ model Book {
   pages       Int?
   cover       String?
 
-  author      String
+  author      Author[]    
   genre       String[]
 
   library     UserBook[]
@@ -58,8 +71,8 @@ model UserBook {
   startedAt DateTime?
   finishedAt DateTime?
 
-user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
 
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
