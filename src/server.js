@@ -7,7 +7,7 @@ app.use(express.json());
 
 // main route
 app.get("/", (req, res) => {
-  res.send("Hello, World!");
+  res.json({ message: "Hello, World!" });
 });
 
 app.listen(port, () => {
