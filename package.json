@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.10.1",
     "@prisma/client": "^7.10.1",
     "ajv": "^8.20.0",
     "aws-ssl-profiles": "^1.1.2",
+    "bcryptjs": "^3.0.3",
     "better-result": "^2.10.0",
     "c12": "^3.3.4",
     "classnames": "^2.5.1",
@@ -55,6 +58,7 @@
     "isexe": "^2.0.0",
     "jiti": "^2.7.0",
     "json-schema-traverse": "^1.0.0",
+    "jsonwebtoken": "^9.0.3",
     "lodash": "^4.18.1",
     "long": "^5.3.2",
     "lru.min": "^1.1.5",
@@ -90,7 +94,8 @@
     "zeptomatch": "^2.1.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/server.js"
   },
   "repository": {
     "type": "git",
