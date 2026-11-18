@@ -1,10 +1,18 @@
-import express from 'express';
+import express from "express";
+import authMiddleware from "../middleware/authMiddleware.js";
+import {
+  getAllBooks,
+  addToLibrary,
+  getMyBooks,
+} from "../controllers/bookController.js";
 
 const router = express.Router();
 
-// Define your book routes here
-router.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the Book API!' });
-});
+router.get("/", getAllBooks);
+
+router.use(authMiddleware);
+
+router.get("/mine", getMyBooks);
+router.post("/", addToLibrary);
 
 export default router;

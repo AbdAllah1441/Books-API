@@ -1,0 +1,11 @@
+# Bound Postman cloud workspace for this repo (created via Postman MCP).
+workspaceId: 50f79305-fd0b-4c7d-8949-3aa8c530c2f8
+workspaceName: pedro-node-course
+collections:
+  - name: Library API
+    uid: 60278085-9886ce65-1981-4d8c-ba7d-29246867d89a
+    localPath: postman/Library-API.postman_collection.json
+environments:
+  - name: Local Dev
+    uid: 60278085-cd8cc93d-52b7-42f3-9161-571a3fdd4f7b
+    localPath: postman/Local-Dev.postman_environment.json
