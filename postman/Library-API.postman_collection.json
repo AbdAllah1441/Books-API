@@ -222,6 +222,28 @@
           ]
         },
         {
+          "name": "Remove book from library",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/books/mine/{{bookId}}",
+            "description": "Remove a book from the authenticated user's library by bookId. Requires `token` cookie."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Removed or not in library', function () {",
+                  "  pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
           "name": "Get my library (unauthenticated)",
           "request": {
             "method": "GET",

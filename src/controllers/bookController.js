@@ -78,4 +78,26 @@ const getMyBooks = async (req, res) => {
   });
 };
 
-export { getAllBooks, addToLibrary, getMyBooks };
+const removeFromLibrary = async (req, res) => {
+  const { bookId } = req.params;
+
+  const entry = await prisma.userBook.findUnique({
+    where: {
+      userId_bookId: {
+        userId: req.user.id,
+        bookId,
+      },
+    },
+  });
+  if (!entry) {
+    return res.status(404).json({ message: "Book not in your library" });
+  }
+
+  await prisma.userBook.delete({
+    where: { id: entry.id },
+  });
+
+  res.json({ message: "Book removed from library" });
+};
+
+export { getAllBooks, addToLibrary, getMyBooks, removeFromLibrary };
