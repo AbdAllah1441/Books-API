@@ -41,7 +41,7 @@ const addToLibrary = async (req, res) => {
     data: {
       userId: req.user.id,
       bookId,
-      status: status ?? "WANT_TO_READ",
+      status: status || "WANT_TO_READ",
     },
     include: { book: true },
   });
@@ -100,4 +100,74 @@ const removeFromLibrary = async (req, res) => {
   res.json({ message: "Book removed from library" });
 };
 
-export { getAllBooks, addToLibrary, getMyBooks, removeFromLibrary };
+const createBook = async (req, res) => {
+  const {
+    title,
+    description,
+    isbn,
+    publishedAt,
+    pages,
+    cover,
+    genre,
+    authorIds,
+  } = req.body;
+
+  if (!title) {
+    return res.status(400).json({ message: "title is required" });
+  }
+
+  if (authorIds?.length) {
+    const authors = await prisma.author.findMany({
+      where: { id: { in: authorIds } },
+      select: { id: true },
+    });
+    if (authors.length !== authorIds.length) {
+      return res.status(400).json({ message: "One or more authorIds are invalid" });
+    }
+  }
+
+  const book = await prisma.book.create({
+    data: {
+      title,
+      description: description || undefined,
+      isbn: isbn || undefined,
+      publishedAt: publishedAt ? new Date(publishedAt) : undefined,
+      pages: pages === "" || pages == null ? undefined : Number(pages),
+      cover: cover || undefined,
+      genre: genre?.length ? genre : [],
+      ...(authorIds?.length
+        ? { author: { connect: authorIds.map((id) => ({ id })) } }
+        : {}),
+    },
+    include: {
+      author: { select: { id: true, name: true } },
+    },
+  });
+
+  res.status(201).json({
+    message: "Book added to catalog",
+    book,
+  });
+};
+
+const deleteBook = async (req, res) => {
+  const { id } = req.params;
+
+  const book = await prisma.book.findUnique({ where: { id } });
+  if (!book) {
+    return res.status(404).json({ message: "Book not found" });
+  }
+
+  await prisma.book.delete({ where: { id } });
+
+  res.json({ message: "Book deleted from catalog" });
+};
+
+export {
+  getAllBooks,
+  addToLibrary,
+  getMyBooks,
+  removeFromLibrary,
+  createBook,
+  deleteBook,
+};

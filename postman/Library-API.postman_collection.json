@@ -1,16 +1,39 @@
 {
   "info": {
+    "_postman_id": "9886ce65-1981-4d8c-ba7d-29246867d89a",
     "name": "Library API",
-    "description": "Runnable contract for the Pedro Node course Express API: cookie JWT auth plus personal book library.\n\nSynced to Postman workspace `pedro-node-course` (collection uid 60278085-9886ce65-1981-4d8c-ba7d-29246867d89a).\n\n`GET /books` is public. Auth cookie `token` is required for `GET /books/mine` and `POST /books`.",
-    "schema": "https://schema.postman.com/json/collection/v2.1.0/collection.json"
+    "description": "Runnable contract for the Pedro Node course Express API: cookie JWT auth plus personal book library.\n\nSynced to Postman workspace `pedro-node-course` (collection uid 60278085-9886ce65-1981-4d8c-ba7d-29246867d89a).\n\n`GET /books` is public. Auth cookie required for library routes. Catalog create/delete require ADMIN role.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    { "key": "baseUrl", "value": "http://localhost:5001" },
-    { "key": "email", "value": "demo@example.com" },
-    { "key": "password", "value": "password123" },
-    { "key": "username", "value": "demo_user" },
-    { "key": "name", "value": "Demo User" },
-    { "key": "bookId", "value": "" }
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5001"
+    },
+    {
+      "key": "email",
+      "value": "admin@example.com"
+    },
+    {
+      "key": "password",
+      "value": "admin123"
+    },
+    {
+      "key": "username",
+      "value": "admin"
+    },
+    {
+      "key": "name",
+      "value": "Admin"
+    },
+    {
+      "key": "bookId",
+      "value": ""
+    },
+    {
+      "key": "authorId",
+      "value": ""
+    }
   ],
   "item": [
     {
@@ -21,7 +44,15 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/",
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
             "description": "Smoke check that the server is up."
           },
           "event": [
@@ -51,14 +82,32 @@
           "name": "Register",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Create a user. Sets httpOnly `token` cookie on success (201).",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"username\": \"{{username}}\",\n  \"name\": \"{{name}}\"\n}",
-              "options": { "raw": { "language": "json" } }
-            },
-            "url": "{{baseUrl}}/auth/register",
-            "description": "Create a user. Sets httpOnly `token` cookie on success (201)."
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
           },
           "event": [
             {
@@ -84,14 +133,32 @@
           "name": "Login",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Authenticate and set the `token` cookie used by /books/mine and POST /books.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
-              "options": { "raw": { "language": "json" } }
-            },
-            "url": "{{baseUrl}}/auth/login",
-            "description": "Authenticate and set the `token` cookie used by /books/mine and POST /books."
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
           },
           "event": [
             {
@@ -117,7 +184,16 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/auth/logout",
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            },
             "description": "Clears the auth cookie."
           },
           "event": [
@@ -144,7 +220,15 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/books",
+            "url": {
+              "raw": "{{baseUrl}}/books",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "books"
+              ]
+            },
             "description": "Public catalog of all books (no auth). Includes author id/name."
           },
           "event": [
@@ -174,7 +258,16 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/books/mine",
+            "url": {
+              "raw": "{{baseUrl}}/books/mine",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "books",
+                "mine"
+              ]
+            },
             "description": "List books in the authenticated user's library. Requires `token` cookie."
           },
           "event": [
@@ -198,14 +291,31 @@
           "name": "Add book to library",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/books",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "books"
+              ]
+            },
+            "description": "Add an existing Book row to the user's library. Requires `token` cookie and a real bookId.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"bookId\": \"{{bookId}}\",\n  \"status\": \"WANT_TO_READ\"\n}",
-              "options": { "raw": { "language": "json" } }
-            },
-            "url": "{{baseUrl}}/books",
-            "description": "Add an existing Book row to the user's library. Requires `token` cookie and a real bookId."
+              "raw": "{\n  \"bookId\": \"{{bookId}}\",\n  \"status\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
           },
           "event": [
             {
@@ -226,7 +336,17 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "{{baseUrl}}/books/mine/{{bookId}}",
+            "url": {
+              "raw": "{{baseUrl}}/books/mine/{{bookId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "books",
+                "mine",
+                "{{bookId}}"
+              ]
+            },
             "description": "Remove a book from the authenticated user's library by bookId. Requires `token` cookie."
           },
           "event": [
@@ -248,7 +368,16 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/books/mine",
+            "url": {
+              "raw": "{{baseUrl}}/books/mine",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "books",
+                "mine"
+              ]
+            },
             "description": "Negative check: /books/mine without cookie should be 401."
           },
           "event": [
@@ -256,7 +385,9 @@
               "listen": "prerequest",
               "script": {
                 "type": "text/javascript",
-                "exec": ["pm.cookies.clear();"]
+                "exec": [
+                  "pm.cookies.clear();"
+                ]
               }
             },
             {
@@ -269,6 +400,203 @@
                   "});"
                 ]
               }
+            }
+          ]
+        },
+        {
+          "name": "Authors",
+          "item": [
+            {
+              "name": "Get all available authors",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/authors",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["authors"]
+                },
+                "description": "Public list of all authors (no auth)."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status is 200', function () {",
+                      "  pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test('Has authors array', function () {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body).to.have.property('authors');",
+                      "  pm.expect(body.authors).to.be.an('array');",
+                      "});",
+                      "if (pm.response.json().authors.length > 0) {",
+                      "  pm.collectionVariables.set('authorId', pm.response.json().authors[0].id);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Create author",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/authors",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "authors"
+                  ]
+                },
+                "description": "Admin only. Creates an Author. Optional userId links to a registered user.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"New Author\",\n  \"bio\": \"\",\n  \"userId\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Created or forbidden', function () {",
+                      "  pm.expect([201, 403]).to.include(pm.response.code);",
+                      "});",
+                      "if (pm.response.code === 201) {",
+                      "  pm.collectionVariables.set('authorId', pm.response.json().author.id);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Delete author",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/authors/{{authorId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["authors", "{{authorId}}"]
+                },
+                "description": "Admin only. Deletes an Author by id."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Deleted, missing, or forbidden', function () {",
+                      "  pm.expect([200, 403, 404]).to.include(pm.response.code);",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Catalog (admin)",
+          "item": [
+            {
+              "name": "Create book in catalog",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/books/catalog",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "books",
+                    "catalog"
+                  ]
+                },
+                "description": "Admin only. Creates a Book row in the catalog.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"New Admin Book\",\n  \"description\": \"\",\n  \"isbn\": \"\",\n  \"publishedAt\": \"\",\n  \"pages\": \"\",\n  \"cover\": \"\",\n  \"genre\": [],\n  \"authorIds\": []\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Created or forbidden', function () {",
+                      "  pm.expect([201, 403]).to.include(pm.response.code);",
+                      "});",
+                      "if (pm.response.code === 201) {",
+                      "  pm.collectionVariables.set('bookId', pm.response.json().book.id);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Delete book from catalog",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/books/catalog/{{bookId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "books",
+                    "catalog",
+                    "{{bookId}}"
+                  ]
+                },
+                "description": "Admin only. Deletes a Book from the catalog (cascades library entries)."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Deleted, missing, or forbidden', function () {",
+                      "  pm.expect([200, 403, 404]).to.include(pm.response.code);",
+                      "});"
+                    ]
+                  }
+                }
+              ]
             }
           ]
         }

@@ -13,6 +13,7 @@ const port = process.env.PORT || 5001;
 // import routes
 import bookRoutes from "./routes/bookRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import authorRoutes from "./routes/authorRoutes.js";
 
 // parse JSON requests
 app.use(express.json());
@@ -30,6 +31,8 @@ app.get("/", (req, res) => {
 app.use("/books", bookRoutes);
 // use auth routes
 app.use("/auth", authRoutes);
+// use author routes (admin)
+app.use("/authors", authorRoutes);
 
 const server = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

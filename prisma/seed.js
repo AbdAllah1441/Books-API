@@ -1,4 +1,5 @@
 import "dotenv/config";
+import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 
@@ -7,6 +8,13 @@ const adapter = new PrismaPg({
 });
 
 const prisma = new PrismaClient({ adapter });
+
+const adminUser = {
+  email: "admin@example.com",
+  username: "admin",
+  name: "Admin",
+  password: "admin123",
+};
 
 const books = [
   {
@@ -76,6 +84,25 @@ const books = [
 ];
 
 async function main() {
+  const hashedPassword = await bcrypt.hash(adminUser.password, 10);
+  await prisma.user.upsert({
+    where: { email: adminUser.email },
+    create: {
+      email: adminUser.email,
+      username: adminUser.username,
+      name: adminUser.name,
+      password: hashedPassword,
+      role: "ADMIN",
+    },
+    update: {
+      role: "ADMIN",
+      password: hashedPassword,
+    },
+  });
+  console.log(
+    `Admin ready: ${adminUser.email} / ${adminUser.password} (role ADMIN)`,
+  );
+
   for (const { author, ...book } of books) {
     // eslint-disable-next-line no-await-in-loop
     const savedAuthor = await prisma.author.upsert({
